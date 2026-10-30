@@ -319,8 +319,7 @@ export default function Aplicacion() {
               
               {/* Aquí mandamos llamar al componente de Carrusel */}
               <Carrusel />
-              
-              <p className="showcase-note">Imágenes ilustrativas. Sustituye estos archivos por capturas o mockups reales de SONAR.</p>
+
             </div>
           </section>
 
@@ -347,7 +346,7 @@ export default function Aplicacion() {
                 viewport={{ once: true }}
               >
                 <h2>Conoce lo que SONAR puede hacer por ti.</h2>
-                <p>Déjanos tus datos y cuéntanos qué te gustaría explorar.</p>
+                <p>Déjanos tus datos y nosotros nos contactaremos contigo.</p>
 
                 <form onSubmit={(e) => { 
                   e.preventDefault(); 
