@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import logoDelfin from './assets/delfin.svg';          
-import logoLetras from './assets/letras-sonar.svg';    
-import Formulario from './Formulario.jsx';  
+import logoDelfin from './assets/delfin.svg';
+import logoLetras from './assets/letras-sonar.svg';
+import Formulario from './Formulario.jsx';
 
-const TIEMPO_SPLASH_MS = 1800; 
-const DURACION_VUELO = 1.3;    
+const TIEMPO_SPLASH_MS = 1800;
+const DURACION_VUELO = 1.3;
 
-function Encabezado({ splashTerminado }) {
+function Encabezado({ splashTerminado, alConocer }) {
   const aparecer = {
     initial: { opacity: 0 },
     animate: { opacity: splashTerminado ? 1 : 0 },
@@ -15,8 +15,8 @@ function Encabezado({ splashTerminado }) {
   };
 
   return (
-    <header className="bg-white sticky-top border-bottom" style={{ zIndex: 10 }}>
-      <div className="container d-flex align-items-center justify-content-between" style={{ minHeight: '76px' }}>
+    <header className="encabezado bg-white sticky-top border-bottom">
+      <div className="encabezado-contenido container d-flex align-items-center justify-content-between">
         <a href="#inicio" className="logo-marca">
           {splashTerminado && (
             <motion.div
@@ -44,14 +44,18 @@ function Encabezado({ splashTerminado }) {
         </a>
 
         <motion.nav className="d-none d-md-flex align-items-center gap-4" {...aparecer}>
-          <a href="#posibilidades" className="text-secondary text-decoration-none fw-medium" style={{ fontSize: '15px' }}>Posibilidades</a>
-          <a href="#carrusel" className="text-secondary text-decoration-none fw-medium" style={{ fontSize: '15px' }}>Un vistazo</a>
-          <a href="#demo" className="text-secondary text-decoration-none fw-medium" style={{ fontSize: '15px' }}>Solicitar demo</a>
+          <a href="#posibilidades" className="nav-enlace">Posibilidades</a>
+          <a href="#carrusel" className="nav-enlace">Un vistazo</a>
         </motion.nav>
 
-        <motion.a href="#demo" className="btn btn-primary fw-bold px-4 py-2" style={{ borderRadius: '10px' }} {...aparecer}>
+        <motion.button
+          type="button"
+          className="btn btn-primary btn-sonar"
+          onClick={alConocer}
+          {...aparecer}
+        >
           Conocer SONAR
-        </motion.a>
+        </motion.button>
       </div>
     </header>
   );
@@ -66,12 +70,14 @@ function Carrusel() {
     { etiqueta: "Espacio para mockup · 03", titulo: "Existencias con más claridad.", descripcion: "Muestra aquí una captura del módulo de inventario, productos o abastecimiento.", imagen: "https://placehold.co/600x400/d7def1/445382?text=Modulo+Inventario" }
   ];
 
+  const { etiqueta, titulo, descripcion, imagen } = datosCarrusel[diapositivaActual];
+
   const irASiguiente = () => setDiapositivaActual((prev) => (prev + 1) % datosCarrusel.length);
   const irAAnterior = () => setDiapositivaActual((prev) => (prev - 1 + datosCarrusel.length) % datosCarrusel.length);
 
   return (
-    <div className="position-relative overflow-hidden p-4 p-md-5" style={{ borderRadius: '22px', background: '#edf1fa', minHeight: '460px' }}>
-      <AnimatePresence mode='wait'>
+    <div className="carrusel position-relative overflow-hidden p-4 p-md-5">
+      <AnimatePresence mode="wait">
         <motion.article
           key={diapositivaActual}
           className="row align-items-center"
@@ -81,19 +87,12 @@ function Carrusel() {
           transition={{ duration: 0.3 }}
         >
           <div className="col-md-6 mb-4 mb-md-0 pe-md-5">
-            <div className="text-primary fw-bold text-uppercase mb-3" style={{ fontSize: '13px', letterSpacing: '1.5px' }}>
-              {datosCarrusel[diapositivaActual].etiqueta}
-            </div>
-            <h3 className="fw-bold mb-3" style={{ fontSize: '34px', lineHeight: '1.1' }}>{datosCarrusel[diapositivaActual].titulo}</h3>
-            <p className="text-secondary" style={{ fontSize: '17px' }}>{datosCarrusel[diapositivaActual].descripcion}</p>
+            <div className="etiqueta">{etiqueta}</div>
+            <h3 className="carrusel-titulo">{titulo}</h3>
+            <p className="carrusel-texto text-secondary">{descripcion}</p>
           </div>
           <div className="col-md-6">
-            <img
-              src={datosCarrusel[diapositivaActual].imagen}
-              alt={datosCarrusel[diapositivaActual].titulo}
-              className="w-100 object-fit-cover shadow-sm"
-              style={{ height: '300px', borderRadius: '15px', background: '#d7def1' }}
-            />
+            <img src={imagen} alt={titulo} className="carrusel-imagen w-100 shadow-sm" />
           </div>
         </motion.article>
       </AnimatePresence>
@@ -101,28 +100,183 @@ function Carrusel() {
       <div className="d-flex align-items-center justify-content-between mt-4">
         <div className="d-flex gap-2">
           {datosCarrusel.map((_, indice) => (
-            <div key={indice} className={`dot-custom ${indice === diapositivaActual ? 'active' : ''}`} onClick={() => setDiapositivaActual(indice)}></div>
+            <button
+              key={indice}
+              type="button"
+              className={`dot-custom ${indice === diapositivaActual ? 'active' : ''}`}
+              onClick={() => setDiapositivaActual(indice)}
+              aria-label={`Ir a la diapositiva ${indice + 1}`}
+            />
           ))}
         </div>
         <div className="d-flex gap-2">
-          <button className="btn d-flex align-items-center justify-content-center bg-white text-primary border" style={{ width: '42px', height: '42px', borderRadius: '50%', borderColor: '#ccd4e8' }} onClick={irAAnterior}>←</button>
-          <button className="btn d-flex align-items-center justify-content-center bg-white text-primary border" style={{ width: '42px', height: '42px', borderRadius: '50%', borderColor: '#ccd4e8' }} onClick={irASiguiente}>→</button>
+          <button type="button" className="carrusel-flecha" onClick={irAAnterior} aria-label="Anterior">←</button>
+          <button type="button" className="carrusel-flecha" onClick={irASiguiente} aria-label="Siguiente">→</button>
         </div>
       </div>
     </div>
   );
 }
 
+function VentanaInformativa({ tipo, alCerrar }) {
+  const contenido = tipo === 'terminos'
+    ? {
+        titulo: 'Términos y condiciones',
+        secciones: [
+          ['Uso de SONAR', 'SONAR ofrece herramientas digitales para consultar y organizar información de negocio. Al utilizar este sitio, aceptas hacerlo de forma responsable y conforme a la legislación aplicable.'],
+          ['Cuentas e información', 'Cada usuario es responsable de la veracidad de la información que comparte y del cuidado de sus credenciales. No compartas datos de acceso con personas no autorizadas.'],
+          ['Disponibilidad y cambios', 'Trabajamos para mantener nuestros servicios disponibles y actualizados; algunas funciones pueden cambiar o interrumpirse por mantenimiento o mejoras.'],
+          ['Privacidad y contacto', 'La información que nos compartas se utilizará para atender tu solicitud y dar seguimiento a tu relación con SONAR. Si tienes dudas sobre estos términos, contáctanos en contacto@sonar-nexus.com.'],
+        ],
+      }
+    : {
+        titulo: 'Nosotros',
+        secciones: [
+          ['Nuestra misión', 'En SONAR Nexus ayudamos a las empresas a trabajar con más claridad, conectando la información que sus equipos necesitan para tomar mejores decisiones.'],
+          ['Lo que hacemos', 'Creamos soluciones digitales para facilitar la gestión de clientes, operaciones e inventario, con herramientas pensadas para adaptarse a las necesidades de cada negocio.'],
+          ['Cómo trabajamos', 'Creemos en la colaboración, la mejora continua y la tecnología útil. Acompañamos a nuestros clientes para que puedan enfocarse en hacer crecer sus proyectos.'],
+        ],
+      };
+
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    const alPulsarTecla = (evento) => {
+      if (evento.key === 'Escape') alCerrar();
+    };
+    document.addEventListener('keydown', alPulsarTecla);
+    return () => {
+      document.body.style.overflow = '';
+      document.removeEventListener('keydown', alPulsarTecla);
+    };
+  }, [alCerrar]);
+
+  const cerrarSiEsElFondo = (evento) => {
+    if (evento.target === evento.currentTarget) alCerrar();
+  };
+
+  return (
+    <motion.div
+      className="ventana-fondo"
+      onMouseDown={cerrarSiEsElFondo}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.2 }}
+    >
+      <motion.div
+        className="ventana-formulario ventana-informativa card bg-white p-4 p-md-5"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="titulo-ventana-informativa"
+        initial={{ opacity: 0, y: 30, scale: 0.96 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        exit={{ opacity: 0, y: 20, scale: 0.97 }}
+        transition={{ duration: 0.25 }}
+      >
+        <button type="button" className="btn-close ventana-cerrar" aria-label="Cerrar" onClick={alCerrar} />
+        <h2 id="titulo-ventana-informativa" className="fw-bold mb-4 pe-4">{contenido.titulo}</h2>
+        {contenido.secciones.map(([titulo, texto]) => (
+          <section className="mb-3" key={titulo}>
+            <h3 className="h6 fw-bold">{titulo}</h3>
+            <p className="text-secondary mb-0">{texto}</p>
+          </section>
+        ))}
+        {tipo === 'terminos' && (
+          <p className="small text-secondary mb-0">Contenido informativo de ejemplo; deberá revisarse antes de publicarse como documento legal.</p>
+        )}
+      </motion.div>
+    </motion.div>
+  );
+}
+
+function FormularioSoporte({ alCerrar }) {
+  const [enviado, setEnviado] = useState(false);
+
+  useEffect(() => {
+    document.getElementById('ticket-creador')?.focus();
+    document.body.style.overflow = 'hidden';
+    const alPulsarTecla = (evento) => {
+      if (evento.key === 'Escape') alCerrar();
+    };
+    document.addEventListener('keydown', alPulsarTecla);
+    return () => {
+      document.body.style.overflow = '';
+      document.removeEventListener('keydown', alPulsarTecla);
+    };
+  }, [alCerrar]);
+
+  const cerrarSiEsElFondo = (evento) => {
+    if (evento.target === evento.currentTarget) alCerrar();
+  };
+
+  const manejarEnvio = (evento) => {
+    evento.preventDefault();
+    setEnviado(true);
+    evento.target.reset();
+  };
+
+  return (
+    <motion.div
+      className="ventana-fondo"
+      onMouseDown={cerrarSiEsElFondo}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.2 }}
+    >
+      <motion.div
+        className="ventana-formulario card bg-white p-4 p-md-5"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="titulo-ticket"
+        initial={{ opacity: 0, y: 30, scale: 0.96 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        exit={{ opacity: 0, y: 20, scale: 0.97 }}
+        transition={{ duration: 0.25 }}
+      >
+        <button type="button" className="btn-close ventana-cerrar" aria-label="Cerrar" onClick={alCerrar} />
+        <h2 id="titulo-ticket" className="fw-bold mb-2 pe-4">Crear un ticket de soporte</h2>
+        <p className="text-secondary mb-4">Cuéntanos quién solicita ayuda, para quién es y qué problema presenta.</p>
+        <form onSubmit={manejarEnvio} onChange={() => setEnviado(false)}>
+          <div className="row g-3">
+            <div className="col-12">
+              <label htmlFor="ticket-creador" className="form-label">¿Quién hace el ticket?</label>
+              <input id="ticket-creador" name="creador" className="form-control campo" required placeholder="Nombre de quien solicita soporte" />
+            </div>
+            <div className="col-12">
+              <label htmlFor="ticket-destinatario" className="form-label">¿Para quién va dirigido?</label>
+              <input id="ticket-destinatario" name="destinatario" className="form-control campo" required placeholder="Persona, equipo o área" />
+            </div>
+            <div className="col-12">
+              <label htmlFor="ticket-problema" className="form-label">Describe el problema</label>
+              <textarea id="ticket-problema" name="problema" className="form-control campo" rows="4" required placeholder="Explica qué sucede y cómo podemos ayudarte" />
+            </div>
+          </div>
+          {enviado && (
+            <div className="alert alert-info mt-4 mb-0" role="status">
+              Este formulario es una demostración y todavía no envía tickets al equipo de soporte.
+            </div>
+          )}
+          <button type="submit" className="btn btn-primary btn-sonar py-3 mt-4">Enviar ticket</button>
+        </form>
+      </motion.div>
+    </motion.div>
+  );
+}
+
 export default function Aplicacion() {
   const [mostrandoSplash, setMostrandoSplash] = useState(true);
   const [mostrarFormulario, setMostrarFormulario] = useState(false);
+  const [panelFooter, setPanelFooter] = useState(null);
 
   useEffect(() => {
-    const temporizador = setTimeout(() => {
-      setMostrandoSplash(false);
-    }, TIEMPO_SPLASH_MS);
+    const temporizador = setTimeout(() => setMostrandoSplash(false), TIEMPO_SPLASH_MS);
     return () => clearTimeout(temporizador);
   }, []);
+
+  // Solo abre: varios clics seguidos no lo duplican ni lo cierran
+  const abrirFormulario = () => setMostrarFormulario(true);
+  const cerrarFormulario = () => setMostrarFormulario(false);
 
   return (
     <>
@@ -140,7 +294,7 @@ export default function Aplicacion() {
         </div>
       )}
 
-      <Encabezado splashTerminado={!mostrandoSplash} />
+      <Encabezado splashTerminado={!mostrandoSplash} alConocer={abrirFormulario} />
 
       <motion.div
         initial={{ opacity: 0 }}
@@ -150,25 +304,21 @@ export default function Aplicacion() {
       >
         <main>
           {/* Hero */}
-          <section className="py-5" id="inicio" style={{ background: 'radial-gradient(circle at 85% 15%, #dce3f8 0, transparent 30%)' }}>
+          <section className="hero py-5" id="inicio">
             <div className="container py-4 py-md-5">
               <div className="row align-items-center gy-5">
                 <motion.div className="col-md-6" initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }}>
-                  <div className="text-primary fw-bold text-uppercase mb-3" style={{ fontSize: '13px', letterSpacing: '1.5px' }}>Conoce SONAR</div>
-                  <h1 className="fw-bold text-dark" style={{ fontSize: 'clamp(42px, 6vw, 72px)', lineHeight: '1.05', letterSpacing: '-2px', marginBottom: '25px' }}>
-                    Más claridad para hacer crecer y tener éxito en tu negocio.
-                  </h1>
-                  <p className="text-secondary mb-4" style={{ fontSize: '19px', maxWidth: '570px' }}>
+                  <h1 className="hero-titulo">Más claridad para hacer crecer y tener éxito en tu negocio.</h1>
+                  <p className="hero-texto text-secondary mb-4">
                     SONAR conecta inventario, mapeo de redes, tickets y herramientas para controlar las auditorias.
                   </p>
                   <div className="d-flex flex-wrap gap-3">
-                    <a href="#carrusel" className="btn btn-primary fw-bold px-4 py-2" style={{ borderRadius: '10px' }}>Descubre lo que puedes hacer con SONAR</a>
-                    <a href="#demo" className="btn bg-white text-primary fw-bold px-4 py-2" style={{ border: '1px solid #d9dfef', borderRadius: '10px' }}>Solicita más información</a>
+                    <a href="#carrusel" className="btn btn-primary btn-sonar">Descubre lo que puedes hacer con SONAR</a>
                   </div>
                 </motion.div>
                 <motion.div className="col-md-6" initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ duration: 0.6, delay: 0.2 }}>
-                  <div className="bg-primary p-4 shadow-lg" style={{ borderRadius: '24px' }}>
-                    <div className="w-100" style={{ borderRadius: '15px', background: '#dfe5f5', minHeight: '320px' }}></div>
+                  <div className="hero-panel">
+                    <div className="hero-vista"></div>
                   </div>
                 </motion.div>
               </div>
@@ -178,10 +328,10 @@ export default function Aplicacion() {
           {/* Intro */}
           <section className="bg-primary text-white py-5">
             <div className="container py-4">
-              <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} style={{ maxWidth: '650px' }}>
-                <div className="fw-bold text-uppercase mb-3" style={{ fontSize: '13px', letterSpacing: '1.5px', color: '#cbd6f6' }}>Una plataforma, más perspectiva</div>
-                <h2 className="fw-bold mb-3" style={{ fontSize: 'clamp(32px, 4vw, 48px)', lineHeight: '1.1' }}>Todo lo que necesitas para tomar mejores decisiones.</h2>
-                <p style={{ fontSize: '18px', color: '#d9e1fa' }}>
+              <motion.div className="intro-seccion" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
+                <div className="etiqueta etiqueta-clara">Una plataforma, más perspectiva</div>
+                <h2 className="titulo-seccion">Todo lo que necesitas para tomar mejores decisiones.</h2>
+                <p className="texto-lead texto-claro">
                   SONAR está pensado para acercar la información y tener mayor aprobación en las auditorias, para que tu equipo pueda trabajar con más claridad y confianza.
                 </p>
               </motion.div>
@@ -191,10 +341,10 @@ export default function Aplicacion() {
           {/* Posibilidades */}
           <section id="posibilidades" className="py-5">
             <div className="container py-4">
-              <div className="mb-5" style={{ maxWidth: '650px' }}>
-                <div className="text-primary fw-bold text-uppercase mb-3" style={{ fontSize: '13px', letterSpacing: '1.5px' }}>Posibilidades</div>
-                <h2 className="fw-bold mb-3" style={{ fontSize: 'clamp(32px, 4vw, 48px)', lineHeight: '1.1' }}>Una forma más sencilla de entender tu negocio.</h2>
-                <p className="text-secondary" style={{ fontSize: '18px' }}>Explora algunas de las áreas en las que SONAR puede ayudar a tu equipo.</p>
+              <div className="intro-seccion mb-5">
+                <div className="etiqueta">Posibilidades</div>
+                <h2 className="titulo-seccion">Una forma más sencilla de entender tu negocio.</h2>
+                <p className="texto-lead text-secondary">Explora algunas de las áreas en las que SONAR puede ayudar a tu equipo.</p>
               </div>
               <div className="row g-4">
                 {[
@@ -203,9 +353,9 @@ export default function Aplicacion() {
                   { num: "03", area: "INVENTARIO", titulo: "Planea con más confianza.", desc: "Visualiza existencias, detecta necesidades y conecta tus decisiones de abastecimiento con el resto del negocio." }
                 ].map((propuesta, indice) => (
                   <motion.article key={indice} className="col-md-4" initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: indice * 0.15, duration: 0.5 }}>
-                    <div className="card h-100 p-4 border bg-white hover-shadow" style={{ borderRadius: '18px', borderColor: '#e4e8f2' }}>
-                      <div className="text-primary fw-bold mb-3" style={{ fontSize: '13px', letterSpacing: '1px' }}>{propuesta.num} / {propuesta.area}</div>
-                      <h3 className="fw-bold mb-3" style={{ fontSize: '23px' }}>{propuesta.titulo}</h3>
+                    <div className="tarjeta h-100">
+                      <div className="tarjeta-etiqueta">{propuesta.num} / {propuesta.area}</div>
+                      <h3 className="tarjeta-titulo">{propuesta.titulo}</h3>
                       <p className="text-secondary mb-0">{propuesta.desc}</p>
                     </div>
                   </motion.article>
@@ -217,36 +367,66 @@ export default function Aplicacion() {
           {/* Showcase Carrusel */}
           <section className="bg-white py-5" id="carrusel">
             <div className="container py-4">
-              <div className="mb-5" style={{ maxWidth: '650px' }}>
-                <div className="text-primary fw-bold text-uppercase mb-3" style={{ fontSize: '13px', letterSpacing: '1.5px' }}>Imagina SONAR en acción</div>
-                <h2 className="fw-bold mb-3" style={{ fontSize: 'clamp(32px, 4vw, 48px)', lineHeight: '1.1' }}>Un vistazo a lo que podrás hacer.</h2>
-                <p className="text-secondary" style={{ fontSize: '18px' }}>Esta sección puede mostrar capturas, mockups o imágenes de las futuras funcionalidades de la plataforma.</p>
+              <div className="intro-seccion mb-5">
+                <div className="etiqueta">Imagina SONAR en acción</div>
+                <h2 className="titulo-seccion">Un vistazo a lo que podrás hacer.</h2>
+                <p className="texto-lead text-secondary">Esta sección puede mostrar capturas, mockups o imágenes de las futuras funcionalidades de la plataforma.</p>
               </div>
               <Carrusel />
             </div>
           </section>
 
-          {/* CTA */}
-          <section className="bg-dark text-white text-center py-5">
-            <div className="container py-4">
+        </main>
+
+        <footer className="pie bg-white">
+          <section className="pie-cta text-white text-center" aria-labelledby="titulo-cta">
+            <div className="container py-5">
               <motion.div initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }}>
-                <h2 className="fw-bold mb-3" style={{ fontSize: 'clamp(32px, 4vw, 50px)' }}>El siguiente capítulo de tu negocio empieza aquí.</h2>
-                <p className="mx-auto mb-4" style={{ color: '#ccd4e8', maxWidth: '600px', fontSize: '18px' }}>Descubre cómo SONAR puede ayudarte a conectar mejor tus equipos, clientes y operaciones.</p>
-                <a href="#demo" className="btn bg-white text-primary fw-bold px-4 py-2 mt-2" style={{ borderRadius: '10px' }}>Solicitar una demostración</a>
+                <h2 id="titulo-cta" className="titulo-seccion">El siguiente capítulo de tu negocio empieza aquí.</h2>
+                <p className="cta-texto mx-auto mb-0">Descubre cómo SONAR puede ayudarte a conectar mejor tus equipos, clientes y operaciones.</p>
               </motion.div>
             </div>
           </section>
-        </main>
-
-        {/* Footer */}
-        <footer className="bg-white py-4" style={{ borderTop: '1px solid #e4e8f2' }}>
-          <div className="container d-flex flex-column flex-md-row justify-content-between align-items-center gap-3 text-secondary" style={{ fontSize: '14px' }}>
-            <p className="mb-0">Una manera más clara de impulsar tu negocio</p>
-            <p className="mb-0">© 2026 SONAR Nexus</p>
-            <p className="mb-0">Redes sociales</p>
+          <div className="container py-5">
+            <div className="row g-4">
+              <div className="col-12 col-sm-6 col-lg-3">
+                <h2 className="pie-titulo">Términos y condiciones</h2>
+                <button type="button" className="pie-enlace" onClick={() => setPanelFooter('terminos')}>Consulta nuestros términos</button>
+              </div>
+              <div className="col-12 col-sm-6 col-lg-3">
+                <h2 className="pie-titulo">Contáctanos</h2>
+                <a className="pie-enlace" href="mailto:contacto@sonar-nexus.com">contacto@sonar-nexus.com</a>
+                <a className="pie-enlace" href="tel:+525500000000">+52 55 0000 0000</a>
+                <a className="pie-enlace" href="https://wa.me/525500000000" target="_blank" rel="noreferrer">WhatsApp: +52 55 0000 0000</a>
+                <p className="pie-nota">Datos de ejemplo; reemplázalos por los canales oficiales.</p>
+              </div>
+              <div className="col-12 col-sm-6 col-lg-3">
+                <h2 className="pie-titulo">Soporte</h2>
+                <button type="button" className="pie-enlace" onClick={() => setPanelFooter('soporte')}>Crear un ticket</button>
+              </div>
+              <div className="col-12 col-sm-6 col-lg-3">
+                <h2 className="pie-titulo">Nosotros</h2>
+                <button type="button" className="pie-enlace" onClick={() => setPanelFooter('nosotros')}>Conoce SONAR Nexus</button>
+              </div>
+            </div>
+            <div className="pie-final mt-4 pt-3">
+              <span>Una manera más clara de impulsar tu negocio</span>
+              <span>© 2026 SONAR Nexus</span>
+            </div>
           </div>
         </footer>
       </motion.div>
+
+      {/* Ventana emergente: solo existe mientras mostrarFormulario sea true */}
+      <AnimatePresence>
+        {mostrarFormulario && <Formulario alCerrar={cerrarFormulario} />}
+      </AnimatePresence>
+      <AnimatePresence mode="wait">
+        {panelFooter === 'soporte' && <FormularioSoporte key="soporte" alCerrar={() => setPanelFooter(null)} />}
+        {(panelFooter === 'terminos' || panelFooter === 'nosotros') && (
+          <VentanaInformativa key={panelFooter} tipo={panelFooter} alCerrar={() => setPanelFooter(null)} />
+        )}
+      </AnimatePresence>
     </>
   );
 }
