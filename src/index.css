@@ -373,10 +373,23 @@ html {
   content: "";
 }
 
+.hero-sonar-logo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.1rem;
+}
+
+.hero-sonar-logo-delfin {
+  display: block;
+  width: 88px;
+  aspect-ratio: 1604.45 / 1080;
+}
+
 .hero-sonar-logo-marco {
   position: relative;
-  width: 120px;
-  height: 44px;
+  width: 100px;
+  height: 35px;
   overflow: hidden;
   border-radius: 5px;
   background: var(--hero-blanco);
@@ -565,7 +578,7 @@ html {
 
 @keyframes hero-sonar-pulso {
   0% { opacity: 0.65; transform: scale(0.96); }
-  75%, 100% { opacity: 0; transform: scale(1.17); }
+  75%, 100% { opacity: 0; transform: scale(1.35); }
 }
 
 @keyframes hero-sonar-descripcion {
@@ -611,15 +624,19 @@ html {
   }
 
   .hero-sonar-centro {
-    width: 128px;
+    width: 120px;
     box-shadow: 0 0 0 6px var(--hero-blanco), 0 8px 18px rgba(38, 54, 87, 0.12);
   }
 
   .hero-sonar-centro::before { inset: -9px; }
 
+  .hero-sonar-logo-delfin {
+    width: 64px;
+  }
+
   .hero-sonar-logo-marco {
-    width: 88px;
-    height: 34px;
+    width: 72px;
+    height: 28px;
   }
 
   .hero-sonar-modulo {

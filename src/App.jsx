@@ -133,8 +133,11 @@ function HeroSonar({ alConocer }) {
 
           <div className="hero-sonar-anillos" aria-hidden="true" />
           <div className="hero-sonar-centro">
-            <div className="hero-sonar-logo-marco">
-              <img src={logoLetras} alt="SONAR" />
+            <div className="hero-sonar-logo">
+              <img className="hero-sonar-logo-delfin" src={logoDelfin} alt="" />
+              <div className="hero-sonar-logo-marco">
+                <img src={logoLetras} alt="SONAR" />
+              </div>
             </div>
           </div>
 
