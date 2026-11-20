@@ -62,6 +62,143 @@ function Encabezado({ splashTerminado, alConocer }) {
   );
 }
 
+const MODULOS_HERO = [
+  { id: 'inventario', nombre: 'Inventario', descripcion: 'Organiza y da seguimiento a tus activos.' },
+  { id: 'redes', nombre: 'Redes', descripcion: 'Visualiza y gestiona tu infraestructura.' },
+  { id: 'tickets', nombre: 'Tickets', descripcion: 'Centraliza y da seguimiento a incidencias.' },
+  { id: 'auditorias', nombre: 'Auditorías', descripcion: 'Facilita el control y la trazabilidad de tus procesos.' },
+];
+
+function IconoModuloHero({ tipo }) {
+  const atributos = {
+    viewBox: '0 0 24 24',
+    fill: 'none',
+    stroke: 'currentColor',
+    strokeWidth: 1.6,
+    strokeLinecap: 'round',
+    strokeLinejoin: 'round',
+    'aria-hidden': true,
+    focusable: false,
+  };
+
+  if (tipo === 'inventario') {
+    return <svg {...atributos}><path d="m12 3 8 4.5v9L12 21l-8-4.5v-9L12 3Z" /><path d="m4.4 7.7 7.6 4.4 7.6-4.4M12 12v9M8 5.3l8 4.5" /></svg>;
+  }
+  if (tipo === 'redes') {
+    return <svg {...atributos}><circle cx="12" cy="5" r="2.2" /><circle cx="5" cy="18" r="2.2" /><circle cx="19" cy="18" r="2.2" /><path d="m10.9 6.9-4.8 9M13.1 6.9l4.8 9M7.2 18h9.6" /></svg>;
+  }
+  if (tipo === 'tickets') {
+    return <svg {...atributos}><path d="M4 6.5A1.5 1.5 0 0 1 5.5 5h13A1.5 1.5 0 0 1 20 6.5V9a3 3 0 0 0 0 6v2.5a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 17.5V15a3 3 0 0 0 0-6V6.5Z" /><path d="M12 8v1m0 3v1m0 3v.1" /></svg>;
+  }
+  return <svg {...atributos}><rect x="5" y="4" width="14" height="17" rx="2" /><path d="M9 4.5v-1h6v1M8.5 11l1.7 1.7 3.3-3.4M15.5 12h1M8.5 17h8" /></svg>;
+}
+
+function HeroSonar({ alConocer }) {
+  const [moduloHover, setModuloHover] = useState(null);
+  const [moduloEnfocado, setModuloEnfocado] = useState(null);
+  const [moduloFijado, setModuloFijado] = useState(null);
+  const moduloActivo = moduloHover || moduloEnfocado || moduloFijado;
+
+  const lineaActiva = (id) => `hero-sonar-linea${moduloActivo === id ? ' is-active' : ''}`;
+
+  return (
+    <section className="hero-sonar" id="inicio" aria-labelledby="hero-sonar-titulo">
+      <div className="hero-sonar-contenido container">
+        <div className="hero-sonar-cabecera">
+          <p className="hero-sonar-etiqueta">Gestión operativa empresarial</p>
+          <h1 className="hero-sonar-titulo" id="hero-sonar-titulo">
+            Todo conectado.<br />
+            <span>Todo bajo control.</span>
+          </h1>
+          <p className="hero-sonar-subtitulo">
+            Centraliza inventario, redes, tickets y auditorías en un solo entorno para una operación más eficiente y con mayor visibilidad.
+          </p>
+        </div>
+
+        <div className="hero-sonar-radar" role="group" aria-label="Radar interactivo de módulos conectados de SONAR">
+          <svg className="hero-sonar-conexiones" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+            <g className="hero-sonar-lineas-escritorio">
+              <line className={lineaActiva('inventario')} x1="50" y1="50" x2="17" y2="14" />
+              <line className={lineaActiva('redes')} x1="50" y1="50" x2="83" y2="14" />
+              <line className={lineaActiva('tickets')} x1="50" y1="50" x2="17" y2="86" />
+              <line className={lineaActiva('auditorias')} x1="50" y1="50" x2="83" y2="86" />
+            </g>
+            <g className="hero-sonar-lineas-movil">
+              <line className={lineaActiva('inventario')} x1="50" y1="50" x2="25" y2="9" />
+              <line className={lineaActiva('redes')} x1="50" y1="50" x2="75" y2="9" />
+              <line className={lineaActiva('tickets')} x1="50" y1="50" x2="25" y2="91" />
+              <line className={lineaActiva('auditorias')} x1="50" y1="50" x2="75" y2="91" />
+            </g>
+          </svg>
+
+          <div className="hero-sonar-anillos" aria-hidden="true" />
+          <div className="hero-sonar-centro">
+            <div className="hero-sonar-logo-marco">
+              <img src={logoLetras} alt="SONAR" />
+            </div>
+          </div>
+
+          {MODULOS_HERO.map((modulo) => {
+            const activo = moduloActivo === modulo.id;
+            return (
+              <button
+                className={`hero-sonar-modulo hero-sonar-modulo-${modulo.id}${activo ? ' is-active' : ''}`}
+                type="button"
+                key={modulo.id}
+                aria-label={`${modulo.nombre}: ${modulo.descripcion}`}
+                aria-controls={`hero-sonar-descripcion-${modulo.id}`}
+                aria-expanded={activo}
+                aria-pressed={moduloFijado === modulo.id}
+                onPointerEnter={(evento) => {
+                  if (evento.pointerType === 'mouse') setModuloHover(modulo.id);
+                }}
+                onPointerLeave={(evento) => {
+                  if (evento.pointerType === 'mouse') setModuloHover(null);
+                }}
+                onPointerDown={(evento) => {
+                  if (evento.pointerType !== 'mouse') setModuloFijado(modulo.id);
+                }}
+                onFocus={(evento) => {
+                  if (evento.currentTarget.matches(':focus-visible')) setModuloEnfocado(modulo.id);
+                }}
+                onBlur={() => setModuloEnfocado(null)}
+                onClick={(evento) => {
+                  if (evento.detail === 0) {
+                    setModuloFijado((actual) => actual === modulo.id ? null : modulo.id);
+                  }
+                }}
+              >
+                <span className={`hero-sonar-icono hero-sonar-icono-${modulo.id}`}>
+                  <IconoModuloHero tipo={modulo.id} />
+                </span>
+                <span className="hero-sonar-nombre">{modulo.nombre}</span>
+                <span
+                  className="hero-sonar-descripcion"
+                  id={`hero-sonar-descripcion-${modulo.id}`}
+                  hidden={!activo}
+                  aria-live="polite"
+                >
+                  {modulo.descripcion}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+
+        <div className="hero-sonar-accion">
+          <button type="button" className="hero-sonar-cta" onClick={alConocer}>
+            Hablar con nuestro equipo
+            <svg viewBox="0 0 20 20" fill="none" aria-hidden="true" focusable="false">
+              <path d="M3.5 10h12m-5-5 5 5-5 5" />
+            </svg>
+          </button>
+          <p>Solicita información y recibe atención personalizada.</p>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function Carrusel() {
   const [diapositivaActual, setDiapositivaActual] = useState(0);
 
@@ -343,29 +480,7 @@ export default function Aplicacion() {
         style={{ visibility: mostrandoSplash ? 'hidden' : 'visible' }}
       >
         <main className="pagina-principal">
-          {/* Hero principal: presenta el beneficio y la vista de SONAR. */}
-          <section className="hero py-5" id="inicio">
-            <div className="container py-4 py-md-5">
-              <div className="superficie-liquida">
-                <div className="row align-items-center gy-5">
-                  <motion.div className="col-md-6" initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }}>
-                    <h1 className="hero-titulo">Más claridad para hacer crecer y tener éxito en tu negocio.</h1>
-                    <p className="hero-texto text-secondary mb-4">
-                      SONAR conecta inventario, mapeo de redes, tickets y herramientas para controlar las auditorias.
-                    </p>
-                    <div className="d-flex flex-wrap gap-3">
-                      <a href="#carrusel" className="btn btn-primary btn-sonar">Descubre lo que puedes hacer con SONAR</a>
-                    </div>
-                  </motion.div>
-                  <motion.div className="col-md-6" initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ duration: 0.6, delay: 0.2 }}>
-                    <div className="hero-panel">
-                      <div className="hero-vista"></div>
-                    </div>
-                  </motion.div>
-                </div>
-              </div>
-            </div>
-          </section>
+          <HeroSonar alConocer={abrirFormulario} />
 
           {/* Introducción de la plataforma, con el panel azul para mantener el texto claro legible. */}
           <section className="bg-primary text-white py-5">
